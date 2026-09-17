@@ -173,7 +173,7 @@ sequenceDiagram
     Cliente->>API: POST /auth/login
     API->>AuthService: login(email, password)
     AuthService->>Users: findByEmail(email)
-    Users->>DynamoDB: Query EmailIndex
+    Users->>DynamoDB: GetItem por email
     DynamoDB-->>Users: Usuário + passwordHash
     Users-->>AuthService: Usuário
     AuthService->>Tokens: comparar senha e gerar tokens

@@ -28,32 +28,14 @@ async function main(): Promise<void> {
     BillingMode: "PAY_PER_REQUEST",
     AttributeDefinitions: [
       {
-        AttributeName: "userId",
-        AttributeType: "S",
-      },
-      {
         AttributeName: "email",
         AttributeType: "S",
       },
     ],
     KeySchema: [
       {
-        AttributeName: "userId",
+        AttributeName: "email",
         KeyType: "HASH",
-      },
-    ],
-    GlobalSecondaryIndexes: [
-      {
-        IndexName: "EmailIndex",
-        KeySchema: [
-          {
-            AttributeName: "email",
-            KeyType: "HASH",
-          },
-        ],
-        Projection: {
-          ProjectionType: "ALL",
-        },
       },
     ],
   });

@@ -68,11 +68,24 @@ export class AuthService {
     const userId = randomUUID();
     const passwordHash = await passwordService.hash(input.password);
 
-    await usersRepository.create({
-      userId,
-      email,
-      passwordHash,
-    });
+    try {
+      await usersRepository.create({
+        userId,
+        email,
+        passwordHash,
+      });
+    } catch (error: unknown) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "name" in error &&
+        error.name === "ConditionalCheckFailedException"
+      ) {
+        throw new Error("E-mail ja cadastrado");
+      }
+
+      throw error;
+    }
 
     return {
       userId,
@@ -131,18 +144,16 @@ export class AuthService {
     const accessToken = tokenService.createAccessToken(storedToken.userId);
     const newRefreshToken = refreshTokenService.create();
 
-    await refreshTokenRepository.revoke(
-      storedToken.tokenHash,
+    await refreshTokenRepository.rotate(
+      storedToken,
+      {
+        tokenHash: newRefreshToken.tokenHash,
+        userId: storedToken.userId,
+        createdAt: nowInSeconds,
+        expiresAt: newRefreshToken.expiresAt,
+      },
       nowInSeconds,
-      newRefreshToken.tokenHash,
     );
-
-    await refreshTokenRepository.save({
-      tokenHash: newRefreshToken.tokenHash,
-      userId: storedToken.userId,
-      createdAt: nowInSeconds,
-      expiresAt: newRefreshToken.expiresAt,
-    });
 
     return {
       accessToken,

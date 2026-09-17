@@ -23,7 +23,7 @@ describe("UsersRepository", () => {
     const sendMock = jest
       .spyOn(dynamoDbDocumentClient, "send")
       .mockResolvedValue({
-        Items: [user],
+        Item: user,
         $metadata: {},
       } as never);
 
@@ -37,7 +37,7 @@ describe("UsersRepository", () => {
     const sendMock = jest
       .spyOn(dynamoDbDocumentClient, "send")
       .mockResolvedValue({
-        Items: [],
+        Item: undefined,
         $metadata: {},
       } as never);
 
@@ -45,5 +45,21 @@ describe("UsersRepository", () => {
 
     expect(result).toBeNull();
     expect(sendMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("cria usuario somente quando o e-mail ainda nao existe", async () => {
+    const sendMock = jest
+      .spyOn(dynamoDbDocumentClient, "send")
+      .mockResolvedValue({ $metadata: {} } as never);
+
+    await repository.create({
+      userId: "user-001",
+      email: "user@example.com",
+      passwordHash: "hashed-password",
+    });
+
+    expect(sendMock.mock.calls[0]?.[0]).toMatchObject({
+      input: { ConditionExpression: "attribute_not_exists(email)" },
+    });
   });
 });

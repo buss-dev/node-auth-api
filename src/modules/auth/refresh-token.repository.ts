@@ -1,4 +1,4 @@
-import { GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand, TransactWriteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 import { env } from "../../config/env.js";
 import { dynamoDbDocumentClient } from "../../infra/dynamodb/client.js";
@@ -60,6 +60,41 @@ export class RefreshTokenRepository {
         },
         UpdateExpression: updateExpression,
         ExpressionAttributeValues: expressionAttributeValues,
+      }),
+    );
+  }
+
+  async rotate(
+    currentToken: RefreshTokenRecord,
+    newToken: RefreshTokenRecord,
+    revokedAt: number,
+  ): Promise<void> {
+    await dynamoDbDocumentClient.send(
+      new TransactWriteCommand({
+        TransactItems: [
+          {
+            Update: {
+              TableName: env.tables.refreshTokens,
+              Key: { tokenHash: currentToken.tokenHash },
+              UpdateExpression:
+                "SET revokedAt = :revokedAt, replacedByTokenHash = :replacedByTokenHash",
+              ConditionExpression:
+                "attribute_not_exists(revokedAt) AND expiresAt > :now",
+              ExpressionAttributeValues: {
+                ":revokedAt": revokedAt,
+                ":replacedByTokenHash": newToken.tokenHash,
+                ":now": revokedAt,
+              },
+            },
+          },
+          {
+            Put: {
+              TableName: env.tables.refreshTokens,
+              Item: newToken,
+              ConditionExpression: "attribute_not_exists(tokenHash)",
+            },
+          },
+        ],
       }),
     );
   }

@@ -1,4 +1,4 @@
-import { GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand, TransactWriteCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { jest } from "@jest/globals";
 
 import { dynamoDbDocumentClient } from "../../../infra/dynamodb/client.js";
@@ -96,6 +96,21 @@ describe("RefreshTokenRepository", () => {
           ":replacedByTokenHash": "replacement-hash",
         },
       },
+    });
+  });
+
+  it("rotaciona o token em uma transacao condicional", async () => {
+    const send = jest.spyOn(dynamoDbDocumentClient, "send").mockResolvedValueOnce({} as never);
+    const repository = new RefreshTokenRepository();
+
+    await repository.rotate({ tokenHash: "old", userId: "user-1", createdAt: 1, expiresAt: 10 }, { tokenHash: "new", userId: "user-1", createdAt: 2, expiresAt: 20 }, 2);
+
+    expect(send).toHaveBeenCalledWith(expect.any(TransactWriteCommand));
+    expect(send.mock.calls[0]?.[0]).toMatchObject({
+      input: { TransactItems: [
+        { Update: { ConditionExpression: "attribute_not_exists(revokedAt) AND expiresAt > :now" } },
+        { Put: { ConditionExpression: "attribute_not_exists(tokenHash)" } },
+      ] },
     });
   });
 });

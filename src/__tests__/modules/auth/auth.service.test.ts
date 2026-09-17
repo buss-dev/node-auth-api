@@ -166,12 +166,8 @@ describe("AuthService", () => {
       expiresAt: 1_800_604_800,
     });
 
-    const revoke = jest
-      .spyOn(refreshTokenRepository, "revoke")
-      .mockResolvedValueOnce();
-
-    const save = jest
-      .spyOn(refreshTokenRepository, "save")
+    const rotate = jest
+      .spyOn(refreshTokenRepository, "rotate")
       .mockResolvedValueOnce();
 
     const result = await authService.refresh("old-refresh-token");
@@ -182,18 +178,14 @@ describe("AuthService", () => {
       refreshTokenExpiresAt: 1_800_604_800,
     });
 
-    expect(revoke).toHaveBeenCalledWith(
-      "old-token-hash",
-      expect.any(Number),
-      "new-refresh-token-hash",
-    );
-
-    expect(save).toHaveBeenCalledWith({
+    expect(rotate).toHaveBeenCalledWith(expect.objectContaining({
+      tokenHash: "old-token-hash",
+    }), {
       tokenHash: "new-refresh-token-hash",
       userId: "user-1",
       createdAt: expect.any(Number),
       expiresAt: 1_800_604_800,
-    });
+    }, expect.any(Number));
   });
 
   it("rejeita um refresh token inexistente", async () => {

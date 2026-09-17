@@ -1,4 +1,4 @@
-import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 
 import { env } from "../../config/env.js";
 import { dynamoDbDocumentClient } from "../../infra/dynamodb/client.js";
@@ -15,24 +15,22 @@ export class UsersRepository {
       new PutCommand({
         TableName: env.tables.users,
         Item: user,
+        ConditionExpression: "attribute_not_exists(email)",
       }),
     );
   }
 
   async findByEmail(email: string): Promise<UserRecord | null> {
     const response = await dynamoDbDocumentClient.send(
-      new QueryCommand({
+      new GetCommand({
         TableName: env.tables.users,
-        IndexName: "EmailIndex",
-        KeyConditionExpression: "email = :email",
-        ExpressionAttributeValues: {
-          ":email": email,
+        Key: {
+          email,
         },
-        Limit: 1,
       }),
     );
 
-    const item = response.Items?.[0];
+    const item = response.Item;
 
     return item ? (item as UserRecord) : null;
   }
