@@ -1,24 +1,24 @@
 # Node Auth API
 
-API REST em Node.js e TypeScript para cadastro e autenticacao de usuarios, com
-sessao baseada em tokens e acesso protegido a uma lista paginada de produtos.
-O projeto demonstra uma separacao clara entre rotas, servicos e repositorios,
-com persistencia no DynamoDB.
+API REST em Node.js e TypeScript para cadastro e autenticação de usuários, com
+sessão baseada em tokens e acesso protegido a uma lista paginada de produtos.
+O projeto demonstra uma separação clara entre rotas, serviços e repositórios,
+com persistência no DynamoDB.
 
-## Destaques tecnicos
+## Destaques técnicos
 
-- Access tokens JWT para autenticar requisicoes protegidas.
-- Refresh tokens opacos: somente seus hashes sao persistidos e cada renovacao
+- Access tokens JWT para autenticar requisições protegidas.
+- Refresh tokens opacos: somente seus hashes são persistidos e cada renovação
   rotaciona o token anterior.
-- Logout com revogacao do access token pelo `jti` e do refresh token associado.
-- DynamoDB como armazenamento de usuarios, tokens revogados, refresh tokens e
+- Logout com revogação do access token pelo `jti` e do refresh token associado.
+- DynamoDB como armazenamento de usuários, tokens revogados, refresh tokens e
   produtos.
 - `GET /products` protegido e paginado por cursor opaco.
-- Rate limiting por IP, em memoria e por janela fixa, com `Retry-After` em
+- Rate limiting por IP, em memória e por janela fixa, com `Retry-After` em
   respostas `429`. Por ser mantido no processo, esse limite vale apenas para
-  uma unica instancia da API; um ambiente distribuido exige armazenamento
+  uma única instância da API; um ambiente distribuído exige armazenamento
   compartilhado.
-- Documentacao Swagger/OpenAPI em `/docs`.
+- Documentação Swagger/OpenAPI em `/docs`.
 - Ambiente Docker com DynamoDB Local e testes automatizados.
 
 ## Pré-requisitos
@@ -52,24 +52,24 @@ Copy-Item .env.example .env
 O arquivo `.env` não deve ser commitado. Em ambientes reais, substitua o valor
 de `JWT_SECRET` por um segredo seguro.
 
-### Limite de requisicoes de produtos
+### Limite de requisições de produtos
 
-Somente `GET /products` possui limite de requisicoes: por padrao, cada IP pode
-fazer 100 requisicoes por janela fixa de 60 segundos. As variaveis abaixo
+Somente `GET /products` possui limite de requisições: por padrão, cada IP pode
+fazer 100 requisições por janela fixa de 60 segundos. As variáveis abaixo
 permitem ajustar esse comportamento:
 
-| Variavel | Padrao | Descricao |
+| Variável | Padrão | Descrição |
 | --- | --- | --- |
-| `RATE_LIMIT_MAX_REQUESTS` | `100` | Numero maximo de requisicoes por IP na janela. |
-| `RATE_LIMIT_WINDOW_SECONDS` | `60` | Duracao da janela fixa, em segundos. |
-| `TRUST_PROXY_HOPS` | `0` | Saltos de proxy confiaveis para determinar o IP do cliente. |
+| `RATE_LIMIT_MAX_REQUESTS` | `100` | Número máximo de requisições por IP na janela. |
+| `RATE_LIMIT_WINDOW_SECONDS` | `60` | Duração da janela fixa, em segundos. |
+| `TRUST_PROXY_HOPS` | `0` | Saltos de proxy confiáveis para determinar o IP do cliente. |
 
-`TRUST_PROXY_HOPS=0` e o padrao seguro: headers como `X-Forwarded-For` nao sao
-confiados. Configure um valor maior que zero somente quando a API estiver atras
+`TRUST_PROXY_HOPS=0` é o padrão seguro: headers como `X-Forwarded-For` não são
+confiados. Configure um valor maior que zero somente quando a API estiver atrás
 de uma quantidade conhecida de proxies controlados. Ao exceder o limite, a API
-retorna `429 Too Many Requests` e o header `Retry-After` com os segundos ate o
-fim da janela. Esse controle e mantido em memoria e, portanto, se aplica apenas
-a uma unica instancia da API; para varias instancias, use um armazenamento
+retorna `429 Too Many Requests` e o header `Retry-After` com os segundos até o
+fim da janela. Esse controle é mantido em memória e, portanto, se aplica apenas
+a uma única instância da API; para várias instâncias, use um armazenamento
 compartilhado para o contador.
 
 ## Executando com Docker
@@ -185,8 +185,7 @@ sequenceDiagram
     API->>AuthService: refresh(refreshToken)
     AuthService->>DynamoDB: GetItem refresh_tokens pelo tokenHash
     DynamoDB-->>AuthService: Registro válido
-    AuthService->>DynamoDB: revogar refresh token antigo
-    AuthService->>DynamoDB: salvar hash do novo refresh token
+    AuthService->>DynamoDB: TransactWrite: revogar token atual e salvar o novo hash
     AuthService->>Tokens: gerar novo access token
     AuthService-->>API: novos tokens
     API-->>Cliente: 200 OK
@@ -235,8 +234,8 @@ npm run build
 
 ### Teste manual do limite
 
-Com a API em execucao e um access token valido, envie mais requisicoes que o
-valor de `RATE_LIMIT_MAX_REQUESTS` dentro de uma janela. A ultima resposta deve
+Com a API em execução e um access token válido, envie mais requisições que o
+valor de `RATE_LIMIT_MAX_REQUESTS` dentro de uma janela. A última resposta deve
 ser `429` e incluir `Retry-After`:
 
 ```bash
