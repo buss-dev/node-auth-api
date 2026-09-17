@@ -11,9 +11,8 @@ Aceito
 A API precisa expor autenticação de usuários, renovação e encerramento
 de sessões, além de uma rota protegida para listagem paginada de produtos.
 
-Como os endpoints não foram definidos estritamente pelo desafio, é necessário
-estabelecer um contrato HTTP consistente e documentá-lo para facilitar o uso,
-a validação e a manutenção da API.
+Para facilitar o uso, a validação e a manutenção da API, é necessário
+estabelecer e documentar um contrato HTTP consistente.
 
 ## Decisão
 

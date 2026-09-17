@@ -12,3 +12,4 @@ coverage/
 !example.tfvars
 lambda.zip
 .DS_Store
+docs/superpowers/

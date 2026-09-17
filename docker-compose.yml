@@ -12,7 +12,7 @@ services:
   api:
     build:
       context: .
-    container_name: stone-auth-api
+    container_name: node-auth-api
     depends_on:
       - dynamodb-local
     env_file:

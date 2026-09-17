@@ -1,12 +1,25 @@
-# Stone Auth API
+# Node Auth API
 
-![Logo da Stone](docs/media/Stone_Logo.webp)
+API REST em Node.js e TypeScript para cadastro e autenticacao de usuarios, com
+sessao baseada em tokens e acesso protegido a uma lista paginada de produtos.
+O projeto demonstra uma separacao clara entre rotas, servicos e repositorios,
+com persistencia no DynamoDB.
 
-API desenvolvida para o desafio técnico de Senior Software Engineer da Stone.
-O projeto implementa autenticação, refresh token com rotação, logout com
-revogação de tokens e listagem paginada de produtos usando DynamoDB.
+## Destaques tecnicos
 
-![Documentação Swagger](docs/media/Swagger.png)
+- Access tokens JWT para autenticar requisicoes protegidas.
+- Refresh tokens opacos: somente seus hashes sao persistidos e cada renovacao
+  rotaciona o token anterior.
+- Logout com revogacao do access token pelo `jti` e do refresh token associado.
+- DynamoDB como armazenamento de usuarios, tokens revogados, refresh tokens e
+  produtos.
+- `GET /products` protegido e paginado por cursor opaco.
+- Rate limiting por IP, em memoria e por janela fixa, com `Retry-After` em
+  respostas `429`. Por ser mantido no processo, esse limite vale apenas para
+  uma unica instancia da API; um ambiente distribuido exige armazenamento
+  compartilhado.
+- Documentacao Swagger/OpenAPI em `/docs`.
+- Ambiente Docker com DynamoDB Local e testes automatizados.
 
 ## Pré-requisitos
 
@@ -55,7 +68,9 @@ permitem ajustar esse comportamento:
 confiados. Configure um valor maior que zero somente quando a API estiver atras
 de uma quantidade conhecida de proxies controlados. Ao exceder o limite, a API
 retorna `429 Too Many Requests` e o header `Retry-After` com os segundos ate o
-fim da janela.
+fim da janela. Esse controle e mantido em memoria e, portanto, se aplica apenas
+a uma unica instancia da API; para varias instancias, use um armazenamento
+compartilhado para o contador.
 
 ## Executando com Docker
 

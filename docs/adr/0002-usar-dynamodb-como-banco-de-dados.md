@@ -8,8 +8,8 @@ Aceito
 
 ## Contexto
 
-O desafio permite o uso de DynamoDB e exige uma rota protegida para
-listagem paginada de produtos, além da autenticação de usuários.
+A API exige uma rota protegida para listagem paginada de produtos, além da
+autenticação de usuários.
 
 Os principais padrões de acesso conhecidos são:
 
@@ -17,7 +17,7 @@ Os principais padrões de acesso conhecidos são:
 - listar produtos de forma paginada.
 
 Esses acessos são previsíveis e não exigem joins ou consultas relacionais
-complexas, tornando o DynamoDB adequado ao escopo do desafio.
+complexas, tornando o DynamoDB adequado ao escopo atual da API.
 
 ## Decisão
 
@@ -92,7 +92,7 @@ de página.
 - GSIs possuem consistência eventual.
 - `listKey = "PRODUCT"` possui baixa cardinalidade e concentra o padrão de
   listagem em uma única chave lógica. Isso é aceitável para o volume do
-  desafio, mas não deve ser tratado como uma estratégia geral para
+  volume inicialmente esperado, mas não deve ser tratado como uma estratégia geral para
   catálogos de grande escala.
 - Caso o volume cresça significativamente, o índice deverá ser remodelado,
   por exemplo com sharding da chave ou outro atributo de negócio compatível

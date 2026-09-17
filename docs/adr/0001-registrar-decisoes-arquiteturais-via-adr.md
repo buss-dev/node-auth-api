@@ -11,13 +11,12 @@ Aceito
 Este projeto envolve múltiplas decisões técnicas relevantes (escolha de banco
 de dados, estratégia de autenticação, mecanismo de rate-limit, ferramenta de
 infraestrutura como código, entre outras) tomadas ao longo do desenvolvimento
-do desafio.
+da API.
 
 Sem um registro formal, o _porquê_ dessas escolhas fica implícito no código ou
-na memória de quem o escreveu, dificultando a avaliação por terceiros e a
-revisão futura das próprias decisões. Como o processo seletivo avalia
-explicitamente organização, arquitetura e clareza de raciocínio técnico, faz
-sentido tornar esse raciocínio visível e revisável.
+na memória de quem o escreveu, dificultando a revisão futura das próprias
+decisões. Tornar esse raciocínio visível e revisável apoia a manutenção e a
+evolução consistente da API.
 
 ## Decisão
 
@@ -48,7 +47,7 @@ focados em decisões de maior impacto e vida mais longa.
   código ou no histórico de commits.
 - Decisões futuras (ou de outros desenvolvedores que eventualmente toquem o
   projeto) têm contexto histórico disponível antes de propor mudanças.
-- Reforça a rastreabilidade entre requisito do desafio e escolha técnica.
+- Reforça a rastreabilidade entre requisitos da API e escolhas técnicas.
 
 **Trade-offs:**
 

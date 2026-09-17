@@ -1,7 +1,7 @@
 export const openapiDocument = {
   openapi: "3.0.3",
   info: {
-    title: "Stone Auth API",
+    title: "Node Auth API",
     version: "1.0.0",
     description: "API de autenticação e consulta paginada de produtos.",
   },

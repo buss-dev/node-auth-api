@@ -16,7 +16,7 @@ Dependências do projeto, agrupadas pela etapa em que foram introduzidas. Ver `d
 
 | Dependência                                      | Docs                                                      | Por quê                                                                       |
 | ------------------------------------------------ | --------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| [typescript](https://www.typescriptlang.org)     | [link](https://www.npmjs.com/package/typescript)          | Tipagem estática, requisito do desafio                                        |
+| [typescript](https://www.typescriptlang.org)     | [link](https://www.npmjs.com/package/typescript)          | Tipagem estática e suporte à manutenção segura                          |
 | [tsx](https://github.com/privatenumber/tsx)      | [link](https://www.npmjs.com/package/tsx)                 | Roda `.ts` direto em dev (baseado em esbuild), sem etapa manual de compilação |
 | [jest](https://jestjs.io/)                       | [link](https://www.npmjs.com/package/jest)                | Executor de testes automatizados                                              |
 | [ts-jest](https://kulshekhar.github.io/ts-jest/) | [link](https://www.npmjs.com/package/ts-jest)             | Integra TypeScript ao Jest                                                    |

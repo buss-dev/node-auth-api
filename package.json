@@ -1,8 +1,8 @@
 {
-  "name": "stone-swe-challenge-node-auth-api",
+  "name": "node-auth-api",
   "version": "1.0.0",
   "type": "module",
-  "description": "- Desafio técnico para vaga de Senior Software Engineer na Stone",
+  "description": "API de autenticação em Node.js.",
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/server.ts",
@@ -16,15 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/buss-dev/stone-swe-challenge-node-auth-api.git"
+    "url": "git+https://github.com/buss-dev/node-auth-api.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/buss-dev/stone-swe-challenge-node-auth-api/issues"
+    "url": "https://github.com/buss-dev/node-auth-api/issues"
   },
-  "homepage": "https://github.com/buss-dev/stone-swe-challenge-node-auth-api#readme",
+  "homepage": "https://github.com/buss-dev/node-auth-api#readme",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1127.0",
     "@aws-sdk/lib-dynamodb": "^3.1127.0",
